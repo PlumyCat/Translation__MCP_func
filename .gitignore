@@ -133,3 +133,9 @@ __blobstorage__
 __queuestorage__
 __azurite_db*__.json
 .python_packages
+
+*.ps1
+*.http
+mcp-list-prompts-data.swagger.json
+Translator-MCP-srv.swagger.json
+*.PublishSettings
