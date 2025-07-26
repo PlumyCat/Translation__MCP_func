@@ -139,3 +139,4 @@ __azurite_db*__.json
 mcp-list-prompts-data.swagger.json
 Translator-MCP-srv.swagger.json
 *.PublishSettings
+test.http
