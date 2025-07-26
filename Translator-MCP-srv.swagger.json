@@ -1,0 +1,107 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Azure Translator MCP Function",
+    "description": "API HTTP d'accès au service de traduction batch Azure Translator via Azure Function, sécurisée par clé API.",
+    "version": "1.0.0"
+  },
+  "host": "TON_FQDN_DE_FONCTION.azurewebsites.net",
+  "basePath": "/api",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "in": "query",
+      "name": "code"
+    }
+  },
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
+  "paths": {
+    "/start_translation": {
+      "post": {
+        "summary": "Démarrer une traduction batch",
+        "description": "Démarre la traduction d'un document blob Azure Storage",
+        "operationId": "startTranslation",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Détails de la demande de traduction",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "blob_name": { "type": "string", "description": "Nom du fichier source (blob)" },
+                "target_language": { "type": "string", "description": "Code langue cible (ex: fr, en)" },
+                "user_id": { "type": "string", "description": "ID de l'utilisateur demandeur" }
+              },
+              "required": ["blob_name", "target_language", "user_id"]
+            }
+          }
+        ],
+        "responses": {
+          "202": { "description": "Traduction démarrée" },
+          "400": { "description": "Erreur de requête" }
+        }
+      }
+    },
+    "/check_status/{translation_id}": {
+      "get": {
+        "summary": "Vérifier le statut d'une traduction",
+        "description": "Vérifie l'état d'un job de traduction en cours",
+        "operationId": "checkStatus",
+        "parameters": [
+          {
+            "name": "translation_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID de la traduction"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Statut retourné" },
+          "404": { "description": "Non trouvé" }
+        }
+      }
+    },
+    "/get_result": {
+      "get": {
+        "summary": "Récupérer le résultat d'une traduction",
+        "description": "Retourne l'URL du fichier traduit et effectue l'upload vers OneDrive si configuré",
+        "operationId": "getResult",
+        "parameters": [
+          { "name": "blob_name", "in": "query", "type": "string", "required": true, "description": "Nom du blob source" },
+          { "name": "target_language", "in": "query", "type": "string", "required": true, "description": "Langue cible" },
+          { "name": "user_id", "in": "query", "type": "string", "required": true, "description": "ID utilisateur" }
+        ],
+        "responses": {
+          "200": { "description": "Résultat de traduction" },
+          "400": { "description": "Erreur de requête" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Statut du service",
+        "description": "Vérifie la santé du service (ping)",
+        "operationId": "healthCheck",
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      }
+    }
+  }
+}
